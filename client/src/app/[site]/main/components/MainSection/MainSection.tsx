@@ -1,18 +1,18 @@
 "use client";
 import { Card, CardContent, CardLoader } from "@/components/ui/card";
 import { Tilt_Warp } from "next/font/google";
-import Image from "next/image";
 import Link from "next/link";
 import { useGetOverview } from "../../../../../api/analytics/useGetOverview";
 import { useGetOverviewBucketed } from "../../../../../api/analytics/useGetOverviewBucketed";
+import { BucketSelection } from "../../../../../components/BucketSelection";
+import { RybbitLogo } from "../../../../../components/RybbitLogo";
+import { useWhiteLabel } from "../../../../../hooks/useIsWhiteLabel";
 import { authClient } from "../../../../../lib/auth";
 import { useStore } from "../../../../../lib/store";
 import { cn } from "../../../../../lib/utils";
-import { BucketSelection } from "../../../../../components/BucketSelection";
 import { Chart } from "./Chart";
 import { Overview } from "./Overview";
 import { PreviousChart } from "./PreviousChart";
-import { RybbitLogo } from "../../../../../components/RybbitLogo";
 
 const SELECTED_STAT_MAP = {
   pageviews: "Pageviews",
@@ -29,6 +29,7 @@ const tilt_wrap = Tilt_Warp({
 });
 
 export function MainSection() {
+  const { isWhiteLabel } = useWhiteLabel();
   const session = authClient.useSession();
 
   const { selectedStat, time, site, bucket } = useStore();
@@ -74,13 +75,15 @@ export function MainSection() {
         <CardContent className="p-2 md:p-4 py-3 w-full">
           <div className="flex items-center justify-between px-2 md:px-0">
             <div className="flex items-center space-x-4">
-              <Link
-                href={session.data ? "/" : "https://rybbit.com"}
-                className={cn("text-lg font-semibold flex items-center gap-1.5 opacity-75", tilt_wrap.className)}
-              >
-                <RybbitLogo width={20} height={20} />
-                rybbit.com
-              </Link>
+              {!isWhiteLabel && (
+                <Link
+                  href={session.data ? "/" : "https://rybbit.com"}
+                  className={cn("text-lg font-semibold flex items-center gap-1.5 opacity-75", tilt_wrap.className)}
+                >
+                  <RybbitLogo width={20} height={20} />
+                  rybbit.com
+                </Link>
+              )}
             </div>
             <span className="text-sm text-neutral-700 dark:text-neutral-200">{SELECTED_STAT_MAP[selectedStat]}</span>
             <BucketSelection />

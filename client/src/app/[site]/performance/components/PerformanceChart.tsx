@@ -18,6 +18,7 @@ import { cn } from "../../../../lib/utils";
 import { usePerformanceStore } from "../performanceStore";
 import { formatMetricValue, getMetricUnit, getPerformanceThresholds, METRIC_LABELS } from "../utils/performanceUtils";
 import { ChartTooltip } from "../../../../components/charts/ChartTooltip";
+import { useWhiteLabel } from "../../../../hooks/useIsWhiteLabel";
 
 const tilt_wrap = Tilt_Warp({
   subsets: ["latin"],
@@ -29,6 +30,7 @@ export function PerformanceChart() {
   const { site, bucket } = useStore();
   const { selectedPerformanceMetric, selectedPercentile } = usePerformanceStore();
   const nivoTheme = useNivoTheme();
+  const { isWhiteLabel } = useWhiteLabel();
 
   // State for toggling percentile visibility
   const [visiblePercentiles, setVisiblePercentiles] = useState<Set<string>>(new Set(["P50", "P75", "P90", "P99"]));
@@ -193,13 +195,15 @@ export function PerformanceChart() {
       <CardContent className="p-2 md:p-4 py-3 w-full">
         <div className="flex items-center justify-between px-2 md:px-0">
           <div className="flex items-center space-x-4">
-            <Link
-              href={session.data ? "/" : "https://rybbit.com"}
-              className={cn("text-lg font-semibold flex items-center gap-1.5 opacity-75", tilt_wrap.className)}
-            >
-              <RybbitLogo width={20} height={20} />
-              rybbit.com
-            </Link>
+            {!isWhiteLabel && (
+              <Link
+                href={session.data ? "/" : "https://rybbit.com"}
+                className={cn("text-lg font-semibold flex items-center gap-1.5 opacity-75", tilt_wrap.className)}
+              >
+                <RybbitLogo width={20} height={20} />
+                rybbit.com
+              </Link>
+            )}
           </div>
           <div className="flex items-center space-x-4">
             <span className="text-sm text-neutral-600 dark:text-neutral-200">

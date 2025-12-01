@@ -1,8 +1,13 @@
 import Link from "next/link";
 import { IS_CLOUD } from "../../lib/const";
+import { useWhiteLabel } from "../../hooks/useIsWhiteLabel";
 
 export function Footer() {
   const APP_VERSION = process.env.NEXT_PUBLIC_APP_VERSION;
+  const { isWhiteLabel } = useWhiteLabel();
+  if (isWhiteLabel) {
+    return null;
+  }
 
   return (
     <div className="flex justify-center items-center h-12 text-neutral-400 gap-4 text-xs">

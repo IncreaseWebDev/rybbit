@@ -187,7 +187,7 @@ export function PricingSection({ isAnnual, setIsAnnual }: { isAnnual: boolean, s
                 >
                   {t("Annual")}
                 </button>
-                <div className="text-xs text-white absolute top-0 right-0 -translate-y-3 translate-x-1/2 bg-emerald-500 dark:bg-emerald-500 rounded-full px-2 py-0.5">
+                <div className="text-xs text-white absolute top-0 right-0 -translate-y-3 bg-emerald-500 dark:bg-emerald-500 rounded-full px-2 py-0.5 whitespace-nowrap">
                   {t("4 months free")}
                 </div>
               </div>

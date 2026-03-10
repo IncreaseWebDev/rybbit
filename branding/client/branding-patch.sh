@@ -44,12 +44,24 @@ if [ -f "/branding/logo.svg" ]; then
     echo "✅ Logos copied"
 fi
 
-# Replace favicon
-if [ -f "/branding/favicon.ico" ]; then
+# Replace favicon - use high-quality multi-size version if available
+if [ -f "/branding/favicon-proper.ico" ]; then
+    echo "📦 Copying favicon (high-quality)..."
+    cp /branding/favicon-proper.ico /app/client/src/app/favicon.ico
+    cp /branding/favicon-proper.ico /app/client/public/favicon.ico 2>/dev/null || true
+    echo "✅ Favicon copied (high-quality)"
+elif [ -f "/branding/favicon.ico" ]; then
     echo "📦 Copying favicon..."
     cp /branding/favicon.ico /app/client/src/app/favicon.ico
     cp /branding/favicon.ico /app/client/public/favicon.ico 2>/dev/null || true
     echo "✅ Favicon copied"
+fi
+
+# Replace icon.svg (used as tab icon / PWA icon) with IWD logo
+if [ -f "/branding/logo.svg" ]; then
+    echo "📦 Copying icon.svg..."
+    cp /branding/logo.svg /app/client/src/app/icon.svg
+    echo "✅ icon.svg replaced"
 fi
 
 # Skip apple-icon (corrupted file)

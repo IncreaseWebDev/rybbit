@@ -113,6 +113,15 @@ find /app/client/src -type f \( -name "*.tsx" -o -name "*.ts" \) -exec sed -i \
     -e 's/rybbit\.com/increasewebdesign.com/g' \
     {} \; 2>/dev/null || true
 
+# Replace Rybbit in translation files
+echo "📝 Updating translation files..."
+find /app/client/messages -type f -name "*.json" -exec sed -i \
+    -e 's/"Rybbit/"IWD Analytics/g' \
+    -e 's/Rybbit /IWD Analytics /g' \
+    -e 's/ Rybbit/ IWD Analytics/g' \
+    {} \; 2>/dev/null || true
+echo "✅ Translation files updated"
+
 # Enable Pages and Performance tabs for self-hosted
 echo " Enabling Pages and Performance tabs..."
 SIDEBAR_FILE="/app/client/src/app/[site]/components/Sidebar/Sidebar.tsx"

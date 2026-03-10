@@ -45,14 +45,13 @@ if [ -f "/branding/logo.svg" ]; then
 fi
 
 # Replace favicon - use high-quality multi-size version if available
+# Note: Next.js 14+ uses src/app/favicon.ico as a special route - must be valid ICO
 if [ -f "/branding/favicon-proper.ico" ]; then
     echo "📦 Copying favicon (high-quality)..."
-    cp /branding/favicon-proper.ico /app/client/src/app/favicon.ico
     cp /branding/favicon-proper.ico /app/client/public/favicon.ico 2>/dev/null || true
     echo "✅ Favicon copied (high-quality)"
 elif [ -f "/branding/favicon.ico" ]; then
     echo "📦 Copying favicon..."
-    cp /branding/favicon.ico /app/client/src/app/favicon.ico
     cp /branding/favicon.ico /app/client/public/favicon.ico 2>/dev/null || true
     echo "✅ Favicon copied"
 fi

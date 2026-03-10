@@ -1,0 +1,62 @@
+#\!/bin/bash
+# Apply IWD Analytics branding to Rybbit
+
+set -e
+
+echo "🎨 Applying IWD Analytics branding..."
+
+# Wait for client container to be ready
+sleep 10
+
+# 1. Replace logos
+echo "🖼️  Replacing logos..."
+if [ -f "branding/logo.svg" ]; then
+    sudo docker cp branding/logo.svg client:/app/public/rybbit.svg
+    sudo docker cp branding/logo.svg client:/app/public/rybbit-text.svg
+    sudo docker cp branding/logo.svg client:/app/public/rybbit-bg.svg
+    echo "✅ Logos replaced"
+else
+    echo "⚠️  Logo file not found, skipping logo replacement"
+fi
+
+# 2. Replace favicon
+echo "🎯 Replacing favicon..."
+if [ -f "branding/favicon.ico" ]; then
+    sudo docker cp branding/favicon.ico client:/app/public/favicon.ico
+    sudo docker cp branding/favicon.ico client:/app/.next/server/app/favicon.ico 2>/dev/null || true
+    sudo docker cp branding/favicon.ico client:/app/.next/server/app/favicon.ico/favicon.ico 2>/dev/null || true
+    echo "✅ Favicon replaced"
+else
+    echo "⚠️  Favicon file not found, skipping favicon replacement"
+fi
+
+# 3. Replace apple-icon (optional)
+if [ -f "branding/apple-icon.png" ]; then
+    sudo docker cp branding/apple-icon.png client:/app/.next/server/app/apple-icon.png 2>/dev/null || true
+fi
+
+# 4. Replace text in built files - MORE COMPREHENSIVE
+echo "📝 Applying text replacements..."
+
+# Replace "Rybbit" with "IWD Analytics"
+sudo docker exec client find /app/.next -name "*.js" -type f -exec sed -i 's/Rybbit/IWD Analytics/g' {} \; 2>/dev/null || true
+# Replace "rybbit.io" with just "IWD Analytics" (not the full URL)
+sudo docker exec client find /app/.next -name "*.js" -type f -exec sed -i 's/rybbit\.io/IWD Analytics/g' {} \; 2>/dev/null || true
+# Replace any remaining "www.increasewebdesign.com" that might have been inserted
+sudo docker exec client find /app/.next -name "*.js" -type f -exec sed -i 's/www\.increasewebdesign\.com/IWD Analytics/g' {} \; 2>/dev/null || true
+# Update page titles
+sudo docker exec client find /app/.next -name "*.js" -type f -exec sed -i 's/Rybbit · /IWD Analytics · /g' {} \; 2>/dev/null || true
+# Replace in HTML files too
+sudo docker exec client find /app/.next -name "*.html" -type f -exec sed -i 's/Rybbit/IWD Analytics/g' {} \; 2>/dev/null || true
+sudo docker exec client find /app/.next -name "*.html" -type f -exec sed -i 's/rybbit\.io/IWD Analytics/g' {} \; 2>/dev/null || true
+sudo docker exec client find /app/.next -name "*.html" -type f -exec sed -i 's/www\.increasewebdesign\.com/IWD Analytics/g' {} \; 2>/dev/null || true
+
+echo "✅ Branding applied\!"
+echo ""
+echo "🔄 Restarting client..."
+sudo docker restart client
+
+sleep 5
+echo ""
+echo "✅ IWD Analytics branding is now live\!"
+echo "   Clear your browser cache to see changes."

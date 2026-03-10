@@ -1,0 +1,27 @@
+# Docker Compose Override for IWD Analytics Custom Images
+# This file overrides the base docker-compose.yml to use custom-built images
+
+services:
+  backend:
+    image: iwd-analytics-backend:latest
+    build:
+      context: .
+      dockerfile: branding/backend/Dockerfile.custom
+    environment:
+      # SMTP Configuration for Google Workspace
+      - SMTP_HOST=${SMTP_HOST:-smtp.gmail.com}
+      - SMTP_PORT=${SMTP_PORT:-587}
+      - SMTP_SECURE=${SMTP_SECURE:-false}
+      - SMTP_USER=${SMTP_USER}
+      - SMTP_PASSWORD=${SMTP_PASS}
+      - SMTP_FROM=${SMTP_FROM:-IWD Analytics <hello@increasewebdesign.com>}
+
+  client:
+    image: iwd-analytics-client:latest
+    build:
+      context: .
+      dockerfile: branding/client/Dockerfile.custom
+      args:
+        NEXT_PUBLIC_BACKEND_URL: ${BASE_URL}
+        NEXT_PUBLIC_DISABLE_SIGNUP: ${DISABLE_SIGNUP}
+        NEXT_PUBLIC_MAPBOX_TOKEN: ${MAPBOX_TOKEN}

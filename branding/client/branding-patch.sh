@@ -122,6 +122,14 @@ find /app/client/messages -type f -name "*.json" -exec sed -i \
     {} \; 2>/dev/null || true
 echo "✅ Translation files updated"
 
+# Fix forgot password link - remove IS_CLOUD gate so it shows on self-hosted
+echo "🔧 Enabling forgot password link for self-hosted..."
+LOGIN_FILE="/app/client/src/app/login/page.tsx"
+if [ -f "$LOGIN_FILE" ]; then
+    perl -i -0pe 's/rightElement=\{\s*\n\s*IS_CLOUD && \(\s*\n(\s*<Link href="\/reset-password"[^\n]*\n\s*[^\n]*\n\s*\))\s*\n\s*\}/rightElement={\n                    \1\n                  }/g' "$LOGIN_FILE" 2>/dev/null || true
+    echo "✅ Forgot password link enabled"
+fi
+
 # Enable Pages and Performance tabs for self-hosted
 echo " Enabling Pages and Performance tabs..."
 SIDEBAR_FILE="/app/client/src/app/[site]/components/Sidebar/Sidebar.tsx"

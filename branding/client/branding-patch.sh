@@ -32,9 +32,15 @@ echo "🎨 Applying IWD Analytics branding to source files..."
 # Replace logos
 if [ -f "/branding/logo.svg" ]; then
     echo "📦 Copying logos..."
+    # Create rybbit directory if it doesn't exist
+    mkdir -p /app/client/public/rybbit
+    
+    # Copy IWD logo to all Rybbit logo locations
     cp /branding/logo.svg /app/client/public/rybbit.svg
     cp /branding/logo.svg /app/client/public/rybbit-text.svg
     cp /branding/logo.svg /app/client/public/rybbit-bg.svg
+    cp /branding/logo.svg /app/client/public/rybbit/frog_white.svg
+    cp /branding/logo.svg /app/client/public/rybbit/horizontal_white.svg
     echo "✅ Logos copied"
 fi
 
@@ -90,7 +96,16 @@ find /app/client/src -type f \( -name "*.tsx" -o -name "*.ts" \) -exec sed -i \
     -e 's/Welcome to Rybbit/Welcome to IWD Analytics/g' \
     -e 's/from Rybbit/from IWD Analytics/g' \
     -e 's/to Rybbit/to IWD Analytics/g' \
+    -e 's/Liking Rybbit/Liking IWD Analytics/g' \
     {} \; 2>/dev/null || true
+
+# Replace RybbitLogo component to use IWD Analytics branding
+LOGO_FILE="/app/client/src/components/RybbitLogo.tsx"
+if [ -f "$LOGO_FILE" ]; then
+    echo "📝 Updating RybbitLogo component..."
+    sed -i 's/alt="Rybbit"/alt="IWD Analytics"/g' "$LOGO_FILE"
+    echo "✅ RybbitLogo component updated"
+fi
 
 # Replace domain references
 find /app/client/src -type f \( -name "*.tsx" -o -name "*.ts" \) -exec sed -i \

@@ -147,3 +147,85 @@ Bill`;
     console.error("Failed to send welcome email:", error);
   }
 };
+
+// OTP Email (for sign-in, email verification, password reset)
+export const sendOtpEmail = async (email: string, otp: string, type: "sign-in" | "email-verification" | "forget-password") => {
+  if (!transporter) return;
+
+  const subjects = {
+    "sign-in": "Your IWD Analytics Sign-In Code",
+    "email-verification": "Verify Your Email Address",
+    "forget-password": "Reset Your Password",
+  };
+
+  const text = `Your verification code is: ${otp}\n\nThis code will expire in 10 minutes.`;
+
+  try {
+    await transporter.sendMail({
+      from: SMTP_FROM,
+      to: email,
+      subject: subjects[type],
+      text,
+      html: `<p>Your verification code is: <strong>${otp}</strong></p><p>This code will expire in 10 minutes.</p>`,
+    });
+  } catch (error) {
+    console.error("Failed to send OTP email:", error);
+  }
+};
+
+// Marketing audience management (no-op for self-hosted)
+export const addContactToAudience = async (email: string, firstName?: string): Promise<void> => {
+  // Self-hosted instances don't use marketing audiences
+  return;
+};
+
+export const isContactUnsubscribed = async (email: string): Promise<boolean> => {
+  // Self-hosted instances don't track unsubscribes
+  return false;
+};
+
+export const unsubscribeContact = async (email: string): Promise<void> => {
+  // Self-hosted instances don't use marketing audiences
+  return;
+};
+
+// Scheduled emails (no-op for self-hosted)
+export const scheduleOnboardingTipEmail = async (
+  email: string,
+  userName: string,
+  tipContent: any,
+  scheduledAt: string
+): Promise<string | null> => {
+  // Self-hosted instances don't support scheduled emails
+  console.log("Scheduled emails not supported in self-hosted mode");
+  return null;
+};
+
+export const cancelScheduledEmail = async (emailId: string): Promise<void> => {
+  // Self-hosted instances don't support scheduled emails
+  return;
+};
+
+// Reengagement emails
+export const sendReengagementEmail = async (
+  email: string,
+  userName: string,
+  content: any,
+  siteId: number,
+  domain: string
+): Promise<void> => {
+  if (!transporter) return;
+
+  const text = `Hi ${userName},\n\nWe noticed you haven't been active lately on ${domain}. Here's what you might have missed...`;
+
+  try {
+    await transporter.sendMail({
+      from: SMTP_FROM,
+      to: email,
+      subject: "We miss you at IWD Analytics",
+      text,
+    });
+  } catch (error) {
+    console.error("Failed to send reengagement email:", error);
+  }
+};
